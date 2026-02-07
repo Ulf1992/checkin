@@ -10,26 +10,48 @@ body{
   text-align:center;
   margin:20px;
 }
+
+/* breiter Container */
 .card{
-  max-width:500px;
+  width:95%;
+  max-width:1000px;
   margin:auto;
   border:1px solid #ccc;
   border-radius:10px;
-  padding:20px;
+  padding:30px;
 }
+
+/* Suchfeld */
 input{
-  font-size:18px;
-  padding:10px;
+  font-size:22px;
+  padding:12px;
   width:90%;
 }
+
+/* Buttons */
 button{
-  font-size:20px;
-  padding:12px 20px;
-  margin:5px;
+  font-size:26px;
+  padding:15px 25px;
+  margin:8px;
+  cursor:pointer;
 }
-.ok{color:green;}
-.warn{color:red;}
-hr{margin:25px;}
+
+/* Statusfarben */
+.ok{
+  color:green;
+  font-weight:bold;
+  font-size:22px;
+}
+
+.warn{
+  color:red;
+  font-weight:bold;
+  font-size:22px;
+}
+
+hr{
+  margin:30px;
+}
 </style>
 </head>
 
@@ -37,15 +59,15 @@ hr{margin:25px;}
 
 <div class="card">
 
-<h3>Mitglied suchen (Name oder ID)</h3>
-<input type="text" id="search" placeholder="Name oder Nummer"
+<h2>Mitglied suchen (Name oder ID)</h2>
+<input type="text" id="search" placeholder="Name oder Nummer eingeben"
        oninput="findPerson()">
 <div id="results"></div>
 
 <hr>
 
-<h2 id="name">QR scannen oder suchen</h2>
-<p id="dept"></p>
+<h1 id="name" style="font-size:42px;">QR scannen oder suchen</h1>
+<p id="dept" style="font-size:24px;"></p>
 
 <button onclick="checkin()">Einchecken</button>
 <p id="msg"></p>
@@ -54,7 +76,7 @@ hr{margin:25px;}
 
 <script>
 
-// ⭐⭐⭐ HIER DEINE URL EINTRAGEN ⭐⭐⭐
+// ⭐⭐⭐ HIER DEINE APPS SCRIPT URL EINTRAGEN ⭐⭐⭐
 const API = "https://script.google.com/macros/s/AKfycbxWeCpYf2luG88HC0TsdZiikDfYTBoUhYZZ6KvloMUq0kTReA-GHA49Th3BpRA7g1tWIQ/exec";
 
 const params = new URLSearchParams(window.location.search);
@@ -88,7 +110,7 @@ function checkin(){
     });
 }
 
-// 🔎 Suche
+// 🔎 Suche nach Name oder ID
 function findPerson(){
   const q = document.getElementById("search").value;
 
@@ -107,6 +129,7 @@ function findPerson(){
         const btn = document.createElement("button");
         btn.innerText = p.name + " (" + p.dept + ") - ID " + p.id;
         btn.style.display = "block";
+        btn.style.margin = "8px auto";
         btn.onclick = () => {
           window.location.search = "?id=" + p.id;
         };
