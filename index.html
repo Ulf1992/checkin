@@ -37,8 +37,8 @@ hr{margin:25px;}
 
 <div class="card">
 
-<h3>Mitglied suchen (falls kein QR)</h3>
-<input type="text" id="search" placeholder="Name eingeben"
+<h3>Mitglied suchen (Name oder ID)</h3>
+<input type="text" id="search" placeholder="Name oder Nummer"
        oninput="findPerson()">
 <div id="results"></div>
 
@@ -54,9 +54,8 @@ hr{margin:25px;}
 
 <script>
 
-// ⭐⭐⭐⭐⭐ HIER MUSST DU NUR DIE URL ERSETZEN ⭐⭐⭐⭐⭐
-const API = "https://script.google.com/macros/s/AKfycbxWeCpYf2luG88HC0TsdZiikDfYTBoUhYZZ6KvloMUq0kTReA-GHA49Th3BpRA7g1tWIQ/exec";
-// ⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐
+// ⭐⭐⭐ HIER DEINE URL EINTRAGEN ⭐⭐⭐
+const API = "HIER_DEINE_APPS_SCRIPT_URL";
 
 const params = new URLSearchParams(window.location.search);
 const id = params.get("id");
@@ -89,11 +88,11 @@ function checkin(){
     });
 }
 
-// 🔎 Suche ohne QR
+// 🔎 Suche
 function findPerson(){
   const q = document.getElementById("search").value;
 
-  if(q.length < 2){
+  if(q.length < 1){
     document.getElementById("results").innerHTML = "";
     return;
   }
@@ -106,7 +105,7 @@ function findPerson(){
 
       list.forEach(p => {
         const btn = document.createElement("button");
-        btn.innerText = p.name + " (" + p.dept + ")";
+        btn.innerText = p.name + " (" + p.dept + ") - ID " + p.id;
         btn.style.display = "block";
         btn.onclick = () => {
           window.location.search = "?id=" + p.id;
