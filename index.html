@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>Vereins Check-in</title>
+
+<style>
+body{
+  font-family: Arial;
+  text-align:center;
+  margin:20px;
+}
+.card{
+  max-width:500px;
+  margin:auto;
+  border:1px solid #ccc;
+  border-radius:10px;
+  padding:20px;
+}
+input{
+  font-size:18px;
+  padding:10px;
+  width:90%;
+}
+button{
+  font-size:20px;
+  padding:12px 20px;
+  margin:5px;
+}
+.ok{color:green;}
+.warn{color:red;}
+hr{margin:25px;}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+
+<h3>Mitglied suchen (falls kein QR)</h3>
+<input type="text" id="search" placeholder="Name eingeben"
+       oninput="findPerson()">
+<div id="results"></div>
+
+<hr>
+
+<h2 id="name">QR scannen oder suchen</h2>
+<p id="dept"></p>
+
+<button onclick="checkin()">Einchecken</button>
+<p id="msg"></p>
+
+</div>
+
+<script>
+
+// ⭐⭐⭐⭐⭐ HIER MUSST DU NUR DIE URL ERSETZEN ⭐⭐⭐⭐⭐
+const API = "https://script.google.com/macros/s/AKfycbxWeCpYf2luG88HC0TsdZiikDfYTBoUhYZZ6KvloMUq0kTReA-GHA49Th3BpRA7g1tWIQ/exec";
+// ⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐
+
+const params = new URLSearchParams(window.location.search);
+const id = params.get("id");
+
+// Wenn per QR geöffnet → Daten laden
+if(id){
+  fetch(API + "?id=" + id)
+    .then(r => r.json())
+    .then(data => {
+      document.getElementById("name").innerText = data.name;
+      document.getElementById("dept").innerText = data.dept;
+    })
+    .catch(() => {
+      document.getElementById("name").innerText = "Nicht gefunden";
+    });
+}
+
+function checkin(){
+  if(!id){
+    alert("Bitte erst Person auswählen");
+    return;
+  }
+
+  fetch(API + "?checkin=1&id=" + id)
+    .then(r => r.text())
+    .then(msg => {
+      const el = document.getElementById("msg");
+      el.innerText = msg;
+      el.className = (msg === "OK") ? "ok" : "warn";
+    });
+}
+
+// 🔎 Suche ohne QR
+function findPerson(){
+  const q = document.getElementById("search").value;
+
+  if(q.length < 2){
+    document.getElementById("results").innerHTML = "";
+    return;
+  }
+
+  fetch(API + "?search=" + q)
+    .then(r => r.json())
+    .then(list => {
+      const div = document.getElementById("results");
+      div.innerHTML = "";
+
+      list.forEach(p => {
+        const btn = document.createElement("button");
+        btn.innerText = p.name + " (" + p.dept + ")";
+        btn.style.display = "block";
+        btn.onclick = () => {
+          window.location.search = "?id=" + p.id;
+        };
+        div.appendChild(btn);
+      });
+    });
+}
+</script>
+
+</body>
+</html>
